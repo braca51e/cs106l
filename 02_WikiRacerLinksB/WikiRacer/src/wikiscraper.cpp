@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <unordered_set>
 #include <unordered_map>
+#include <fstream>
 #include "wikiscraper.h"
 #include "error.h"
 
@@ -19,16 +20,9 @@ using std::unordered_map;   using std::unordered_set;
  * If you used any helper functions, just put them above this function.
  */
 unordered_set<string> findWikiLinks(const string& inp) {
-    // TODO: Remove all the code in this function and
-    //       fill in with code from part A of assignmetn
+    // For now will read txt directly from disk
 
-    errorPrint();
-    errorPrint("If you are seeing this message, you haven't implemented");
-    errorPrint("the find_wiki_links method in wikiscraper.cpp.");
-    errorPrint();
-    cout << endl;
     return {};
-
 }
 
 
