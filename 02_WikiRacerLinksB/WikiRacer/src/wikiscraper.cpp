@@ -9,9 +9,7 @@
 using std::cout;            using std::endl;
 using std::cerr;            using std::string;
 using std::unordered_map;   using std::unordered_set;
-
-
-
+using std::search;
 
 /*
  * You should delete the code in this function and
@@ -22,7 +20,50 @@ using std::unordered_map;   using std::unordered_set;
 unordered_set<string> findWikiLinks(const string& inp) {
     // For now will read txt directly from disk
 
-    return {};
+    unordered_set<string> ret;
+    string wiki_start= string("<a");
+    string wiki_end = string("</a>");
+
+    string::const_iterator page_start = inp.begin();
+    string::const_iterator page_end = inp.end();
+    string::const_iterator link_start = inp.begin();
+    string::iterator link_end;
+
+    while(page_start != page_end){
+        //Extract link
+        link_start = search(page_start, page_end,
+                        wiki_start.begin(), wiki_start.end());
+        //Page will start at the end of link
+        page_start = search(link_start, page_end, wiki_end.begin(), wiki_end.end());
+
+        if(page_start != page_end){
+
+            //Create substr until last character </a>
+            page_start += 4;
+            string link = string(link_start, page_start);
+
+            //Search PAGENAME
+            string wiki_str_start = string("/wiki/");
+            string wiki_str_end = {"\""};
+            link_start = search(link.begin(), link.end(),
+                            wiki_str_start.begin(), wiki_str_start.end());
+            link_end = search(link_start, link.end(),
+                            wiki_str_end.begin(), wiki_str_end.end());
+            if(link_start != link.end()){
+                //offset by 6 (/wiki/)
+                string pagename = string(link_start+6, link_end);
+
+                if(!all_of(pagename.begin(), pagename.end(), [](char c){return c == ':';})){
+                    cout << "pagename: " << pagename << endl;
+                    ret.insert(pagename);
+                }
+            }
+        }
+    }
+
+    cout << "Done!" << endl;
+
+    return ret;
 }
 
 

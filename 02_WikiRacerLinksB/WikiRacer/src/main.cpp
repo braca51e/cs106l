@@ -20,6 +20,7 @@ using std::ifstream;
 using std::stringstream;
 using std::find;
 using std::search;
+using std::all_of;
 /*
  * This is the function you will be implementing. It takes
  * two string representing the names of a start_page and
@@ -51,28 +52,44 @@ vector<string> findWikiLadder(const string& start_page, const string& end_page) 
 
     string::iterator page_start = html_page.begin();
     string::iterator page_end = html_page.end();
-    string::iterator link_start;
+    string::iterator link_start = html_page.begin();
     string::iterator link_end;
 
     while(page_start != page_end){
         //Extract link
         link_start = search(page_start, page_end,
                         wiki_start.begin(), wiki_start.end());
-        link_end = search(page_start, page_end, wiki_end.begin(), wiki_end.end());
+        //Page will start at the end of link
+        page_start = search(link_start, page_end, wiki_end.begin(), wiki_end.end());
 
-        //Create substr until last character </a>
-        link_end += 4;
-        string link = string(link_start, link_end);
+        if(page_start != page_end){
 
-        //Search PAGENAME
-        cout << "String: " << link << endl;
+            //Create substr until last character </a>
+            page_start += 4;
+            string link = string(link_start, page_start);
 
-        //Create substring without previous link
-        page_start = link_end;
+            //Search PAGENAME
+            string wiki_str_start = string("/wiki/");
+            string wiki_str_end = {"\""};
+            link_start = search(link.begin(), link.end(),
+                            wiki_str_start.begin(), wiki_str_start.end());
+            link_end = search(link_start, link.end(),
+                            wiki_str_end.begin(), wiki_str_end.end());
+            if(link_start != link.end()){
+                //offset by 6 (/wiki/)
+                string pagename = string(link_start+6, link_end);
 
+                if(!all_of(pagename.begin(), pagename.end(), [](char c){return c == ':';})){
+                    cout << "pagename: " << pagename << endl;
+                    ret.push_back(pagename);
+                }
+            }
+        }
     }
 
-    return {};
+    cout << "Done!" << endl;
+
+    return ret;
 }
 
 int main() {
